@@ -1,0 +1,62 @@
+/* Name */
+header h1 {
+  text-align: center;
+}
+
+/* Personal Info */
+header p {
+  text-align: center;
+}
+
+/* Section underline */
+section h2 {
+  border-bottom: 1px solid #000; /* Adjust the color (#000 for black) and thickness (2px) as needed */
+  padding-bottom: 0px; /* Adds space between the text and the underline... placeholder */
+}
+
+/* Create the 'page' Container Effect */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f5f5;
+  display: flex;
+  justify-content: center;
+}
+
+/* Give the background screen a different color to facilitate 'page' */
+main {
+  background: #fff;
+  width: 100%;
+  max-width: 800px; /* Adjust based on your preference */
+  margin: 20px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Date/Links Rightward Alignment */
+.align-right {
+  float: right;
+}
+
+/* Decrease margin for all Bullet points */
+ul {
+  padding-left: 20px; /* Reduces the default padding */
+  margin-left: 0; /* Removes any additional margin */
+}
+
+/* Decrease gap with text above (more general use) */ 
+.bring-closer-to-text-above {
+  margin-top: -15px; /* Reduce the number as needed to bring it closer to the text above */
+}
+
+/* Decrease gap for text below lines */
+.below-line {
+  margin-top: -15px; /* Reduce the number as needed to bring it closer to the text above */
+}
+
+/* Name, Section text color */
+h1,
+h2 {
+  color: #751a47;
+}
