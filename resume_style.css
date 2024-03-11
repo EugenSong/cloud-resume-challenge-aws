@@ -45,7 +45,7 @@ ul {
   margin-left: 0; /* Removes any additional margin */
 }
 
-/* Decrease gap with text above (more general use) */ 
+/* Decrease gap with text above (more general use) */
 .bring-closer-to-text-above {
   margin-top: -15px; /* Reduce the number as needed to bring it closer to the text above */
 }
@@ -59,4 +59,9 @@ ul {
 h1,
 h2 {
   color: #751a47;
+}
+
+/* Visitor count */
+.visitor-count-label {
+  margin-top: 60px;
 }
