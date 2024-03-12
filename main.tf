@@ -29,10 +29,26 @@ locals {
 # ===============================
 
 # S3 Bucket Creation
-module "resume_s3_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+resource "aws_s3_bucket" "resume_bucket" {
   bucket = "my-s3-terraform-bucket12359"
-  
+  tags   = {
+    Name = "Test bucket"
+  }
+}
+
+# S3 Bucket Public Access
+resource "aws_s3_bucket_public_access_block" "public_access_block" {
+  bucket = aws_s3_bucket.resume_bucket.id
+  block_public_acls         = false
+  block_public_policy       = false
+  ignore_public_acls        = false
+  restrict_public_buckets   = false
+}
+
+# S3 Bucket Policy
+resource "aws_s3_bucket_policy" "bucket_policy" {
+  bucket = aws_s3_bucket.resume_bucket.id
+
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -45,27 +61,12 @@ module "resume_s3_bucket" {
       }
     ]
   })
-
-  tags = {
-    Name = "Test bucket"
-  }
-}
-
-# S3 Bucket Public Access
-resource "aws_s3_bucket_public_access_block" "public_access_block" {
-
-  bucket = module.resume_s3_bucket.s3_bucket_id
-
-  block_public_acls   = false
-  block_public_policy = false
-  ignore_public_acls  = false
-  restrict_public_buckets = false
 }
 
 # S3 Bucket Objects Insertion
 resource "aws_s3_object" "objects" {
 
-  depends_on = [module.resume_s3_bucket]
+  depends_on = [aws_s3_bucket.resume_bucket]
   
   for_each = fileset(".", "*.{html,css,js,ico}")
 
@@ -76,25 +77,6 @@ resource "aws_s3_object" "objects" {
   content_type = lookup(local.content_types, lower(regex("\\.[^.]+$", each.value)), "application/octet-stream")
 }
 
-# S3 Bucket Policy
-resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = module.resume_s3_bucket.s3_bucket_id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "PublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource  = "arn:aws:s3:::my-s3-terraform-bucket12359/*"
-      },
-    ]
-  })
-}
-
-
 
 # ===============================
 # CloudFront Config
@@ -102,15 +84,14 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 
 resource "aws_cloudfront_distribution" "resume_s3_distribution" {
   origin {
-    # domain_name              = aws_s3_bucket.my-s3-terraform-bucket12359.bucket_regional_domain_name
-    domain_name              = module.resume_s3_bucket.s3_bucket_bucket_domain_name
+    domain_name              = aws_s3_bucket.resume_bucket.bucket_regional_domain_name
     # origin_access_control_id = aws_cloudfront_origin_access_control.default.id
     origin_id                = local.s3_origin_id
   }
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = "cloudfront terraform practice"
+  comment             = "resume cloudfront distro"
   default_root_object = "Eugene_Song_resume.html"
 
   # logging_config {
