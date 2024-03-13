@@ -143,3 +143,34 @@ resource "aws_cloudfront_distribution" "resume_s3_distribution" {
     minimum_protocol_version = "TLSv1.2_2021"
   }
 }
+
+
+# ===============================
+# DynamoDB Table Config
+# ===============================
+
+resource "aws_dynamodb_table" "resume-visitor-dynamodb-table" {
+  name           = "VisitorCountsTable"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 10
+  write_capacity = 10
+  hash_key       = "PageID"
+
+  attribute {
+    name = "PageID"
+    type = "S"
+  }
+
+  ### DO NOT NEED TO DECLARE ALL ATTRIBUTES.. EXCLUDE THOSE WHICH DONT NEED INDEXING... JUST THE KEY ONES
+  # attribute {
+  #   name = "VisitCount"
+  #   type = "N"
+  # }
+
+   tags = {
+    Name        = "cloud-resume-dynamodb"
+    Environment = "production"
+  }
+}
+
+
