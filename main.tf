@@ -152,8 +152,8 @@ resource "aws_cloudfront_distribution" "resume_s3_distribution" {
 resource "aws_dynamodb_table" "resume-visitor-dynamodb-table" {
   name           = "VisitorCountsTable"
   billing_mode   = "PROVISIONED"
-  read_capacity  = 10
-  write_capacity = 10
+  read_capacity  = 5
+  write_capacity = 5
   hash_key       = "PageID"
 
   attribute {
@@ -171,6 +171,73 @@ resource "aws_dynamodb_table" "resume-visitor-dynamodb-table" {
     Name        = "cloud-resume-dynamodb"
     Environment = "production"
   }
+  ## No need for Auto-Scaling due to minimal traffic
 }
+
+
+# ===============================
+# Lambda Config
+# ===============================
+
+
+# Lambda functions need to be packaged - data archive file
+
+
+
+# Lambda function
+resource "aws_lambda_function" "lambda" {
+	# ...
+
+
+}
+
+
+
+
+# ===============================
+# API Gateway Config - HTTP API
+# ===============================
+
+
+# Provision API Gateway - HTTP
+resource "aws_apigatewayv2_api" "ResumeAPI-lambda" {
+  name          = "visitorcount-lambda-http-api"
+  protocol_type = "HTTP"
+  cors_configuration  = { 
+    allow_origins = 
+    allow_methods = 
+  }
+  target        = aws_lambda_function.lambda.arn
+
+  description = "API for AWS Resume Challenge"
+    
+}
+
+# Permission
+resource "aws_lambda_permission" "apigw" {
+    action        = "lambda:InvokeFunction"
+    function_name = aws_lambda_function.lambda.arn
+    principal     = "apigateway.amazonaws.com"
+
+    source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+}
+
+
+
+
+# ===============================
+# Example how to gen Random ID ... use random_id resource
+# ===============================
+
+# resource "random_id" "id" {
+# 	byte_length = 8
+# }
+
+# resource "aws_apigatewayv2_api" "api" {
+# 	name = "api-${random_id.id.hex}"
+# 	# ...
+# }
+
+
 
 
