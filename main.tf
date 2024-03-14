@@ -185,23 +185,40 @@ resource "aws_cloudwatch_log_group" "visitor_count_cw_logs" {
   retention_in_days = 30
 }
 
+
 # Define Trust policy within IAM role
+# Define IAM role with inline policy attached
 resource "aws_iam_role" "lambda_iam_role" {
   name               = "count_visitor_lambda_trust_policy"
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17"
+    Version   = "2012-10-17",
     Statement = [
       {
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
-        Sid       = ""
+        Effect    = "Allow",
+        Action    = "sts:AssumeRole",
         Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-      }
-    ]
+          Service = "lambda.amazonaws.com",
+        },
+      },
+    ],
   })
+
+  # Attach inline policy granting DynamoDB permissions
+  inline_policy {
+    name = "DynamoDBAccessPolicy"
+    policy = jsonencode({
+      Version   = "2012-10-17",
+      Statement = [
+        {
+          Effect   = "Allow",
+          Action   = "dynamodb:UpdateItem",
+          Resource = "arn:aws:dynamodb:us-east-1:415316982996:table/VisitorCounts",
+        },
+      ],
+    })
+  }
 }
+
 
 # Attach Lambda basic Execution policy to IAM role
 resource "aws_iam_role_policy_attachment" "lambda_policy" {
@@ -269,7 +286,7 @@ resource "aws_s3_object" "lambda_code" {
 resource "aws_lambda_function" "visitor_count_lambda" {
   function_name    = "count_visitors_lambda"
   role             = aws_iam_role.lambda_iam_role.arn
-  handler          = "lambda_function.lambda_handler"
+  handler          = "visitor_counter.lambda_handler"
   runtime          = "python3.11"
   filename         = "${path.module}/../lambda_code.zip"
   source_code_hash = data.archive_file.lambda_code.output_base64sha256
@@ -282,28 +299,79 @@ resource "aws_lambda_function" "visitor_count_lambda" {
 # ===============================
 
 
-# # Provision API Gateway - HTTP
-# resource "aws_apigatewayv2_api" "ResumeAPI-lambda" {
-#   name          = "visitorcount-lambda-http-api"
-#   protocol_type = "HTTP"
-#   cors_configuration  = { 
-#     allow_origins = 
-#     allow_methods = 
-#   }
-#   target        = aws_lambda_function.lambda.arn
+# Provision API Gateway - HTTP
+resource "aws_apigatewayv2_api" "http-lambda-apigw" {
+  name          = "visitorcount-lambda-http-api-gw"
+  protocol_type = "HTTP"
+  cors_configuration {
+    allow_origins = ["https://*"]
+    allow_methods = ["GET"]
+  }
+  target        = aws_lambda_function.visitor_count_lambda.arn
 
-#   description = "API for AWS Resume Challenge"
+  description = "API for AWS Resume Challenge"
     
-# }
+}
 
-# # Permission
-# resource "aws_lambda_permission" "apigw" {
-#     action        = "lambda:InvokeFunction"
-#     function_name = aws_lambda_function.lambda.arn
-#     principal     = "apigateway.amazonaws.com"
+# Create single api-gw stage
+resource "aws_apigatewayv2_stage" "lambda" {
+  api_id = aws_apigatewayv2_api.http-lambda-apigw.id
 
-#     source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
-# }
+  name        = "single_lambda_stage"
+  auto_deploy = true
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gw.arn
+
+    format = jsonencode({
+      requestId               = "$context.requestId"
+      sourceIp                = "$context.identity.sourceIp"
+      requestTime             = "$context.requestTime"
+      protocol                = "$context.protocol"
+      httpMethod              = "$context.httpMethod"
+      resourcePath            = "$context.resourcePath"
+      routeKey                = "$context.routeKey"
+      status                  = "$context.status"
+      responseLength          = "$context.responseLength"
+      integrationErrorMessage = "$context.integrationErrorMessage"
+      }
+    )
+  }
+}
+
+# Allow api-gw to use Lambda func
+resource "aws_apigatewayv2_integration" "lambda-integration" {
+  api_id = aws_apigatewayv2_api.http-lambda-apigw.id
+
+  integration_uri    = aws_lambda_function.visitor_count_lambda.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
+
+# Create GET HTTP route
+resource "aws_apigatewayv2_route" "lambda_route" {
+  api_id = aws_apigatewayv2_api.http-lambda-apigw.id
+
+  route_key = "GET /updateVisitorCount"
+  target    = "integrations/${aws_apigatewayv2_integration.lambda-integration.id}"
+}
+
+# Logging to CW
+resource "aws_cloudwatch_log_group" "api_gw" {
+  name = "/aws/api_gw/${aws_apigatewayv2_api.http-lambda-apigw.name}"
+
+  retention_in_days = 30
+}
+
+
+# Permission
+resource "aws_lambda_permission" "apigw" {
+    action        = "lambda:InvokeFunction"
+    function_name = aws_lambda_function.visitor_count_lambda.arn
+    principal     = "apigateway.amazonaws.com"
+
+    source_arn = "${aws_apigatewayv2_api.http-lambda-apigw.execution_arn}/*/*"
+}
 
 
 
