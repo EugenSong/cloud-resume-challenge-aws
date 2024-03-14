@@ -176,21 +176,104 @@ resource "aws_dynamodb_table" "resume-visitor-dynamodb-table" {
 
 
 # ===============================
-# Lambda Config
+# Lambda Config - Requires TrustPolicy+ExecutionRole 
 # ===============================
+
+# Lambda cw-Logs
+resource "aws_cloudwatch_log_group" "visitor_count_cw_logs" {
+  name              = "/aws/lambda/${aws_lambda_function.visitor_count_lambda.function_name}"
+  retention_in_days = 30
+}
+
+# Define Trust policy within IAM role
+resource "aws_iam_role" "lambda_iam_role" {
+  name               = "count_visitor_lambda_trust_policy"
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Sid       = ""
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# Attach Lambda basic Execution policy to IAM role
+resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  role       = aws_iam_role.lambda_iam_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
 
 
 # Lambda functions need to be packaged - data archive file
-
-
-
-# Lambda function
-resource "aws_lambda_function" "lambda" {
-	# ...
-
-
+# ZIP up Lambda code (including dependencies)
+data "archive_file" "lambda_code" {
+  type        = "zip"
+  source_dir  = "${path.module}/lambda_code/"
+  output_path = "${path.module}/../lambda_code.zip"
 }
 
+# S3 Bucket Creation 
+resource "aws_s3_bucket" "lambda_bucket" {
+  bucket = "my-lambda-bucket12351"
+  tags   = {
+    Name = "Lambda bucket"
+  }
+}
+
+# S3 Bucket Public Access - Public access for this Scope
+resource "aws_s3_bucket_public_access_block" "lambda_public_access_block" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+  block_public_acls         = false
+  block_public_policy       = false
+  ignore_public_acls        = false
+  restrict_public_buckets   = false
+}
+
+# S3 Bucket Policy
+resource "aws_s3_bucket_policy" "lambda_bucket_policy" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "PublicReadWriteObject",
+        "Effect" : "Allow",
+        "Principal" : "*",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject"
+        ],
+        "Resource" : "arn:aws:s3:::my-lambda-bucket12351/*"
+      }
+    ]
+  })
+}
+
+
+# Insert Lambda ZIP file into S3 Lambda-bucket
+resource "aws_s3_object" "lambda_code" {
+  bucket = aws_s3_bucket.lambda_bucket.id
+  key    = "lambda_code.zip"
+  source = data.archive_file.lambda_code.output_path
+}
+
+# Lamda function
+resource "aws_lambda_function" "visitor_count_lambda" {
+  function_name    = "count_visitors_lambda"
+  role             = aws_iam_role.lambda_iam_role.arn
+  handler          = "lambda_function.lambda_handler"
+  runtime          = "python3.11"
+  filename         = "${path.module}/../lambda_code.zip"
+  source_code_hash = data.archive_file.lambda_code.output_base64sha256
+}
 
 
 
@@ -199,28 +282,28 @@ resource "aws_lambda_function" "lambda" {
 # ===============================
 
 
-# Provision API Gateway - HTTP
-resource "aws_apigatewayv2_api" "ResumeAPI-lambda" {
-  name          = "visitorcount-lambda-http-api"
-  protocol_type = "HTTP"
-  cors_configuration  = { 
-    allow_origins = 
-    allow_methods = 
-  }
-  target        = aws_lambda_function.lambda.arn
+# # Provision API Gateway - HTTP
+# resource "aws_apigatewayv2_api" "ResumeAPI-lambda" {
+#   name          = "visitorcount-lambda-http-api"
+#   protocol_type = "HTTP"
+#   cors_configuration  = { 
+#     allow_origins = 
+#     allow_methods = 
+#   }
+#   target        = aws_lambda_function.lambda.arn
 
-  description = "API for AWS Resume Challenge"
+#   description = "API for AWS Resume Challenge"
     
-}
+# }
 
-# Permission
-resource "aws_lambda_permission" "apigw" {
-    action        = "lambda:InvokeFunction"
-    function_name = aws_lambda_function.lambda.arn
-    principal     = "apigateway.amazonaws.com"
+# # Permission
+# resource "aws_lambda_permission" "apigw" {
+#     action        = "lambda:InvokeFunction"
+#     function_name = aws_lambda_function.lambda.arn
+#     principal     = "apigateway.amazonaws.com"
 
-    source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
-}
+#     source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
+# }
 
 
 
