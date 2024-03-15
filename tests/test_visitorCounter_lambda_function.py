@@ -7,7 +7,7 @@ import sys
 import os
 
 # Add the parent directory to sys.path to import lambda_function.py
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../lambda_code/")))
 from visitor_counter import lambda_handler
 
 @pytest.fixture(scope="function")

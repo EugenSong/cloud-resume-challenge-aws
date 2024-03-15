@@ -24,9 +24,9 @@ locals {
   s3_origin_id = "my-s3-terraform-bucket12359.s3.us-east-1.amazonaws.com"
 }
 
-# ===============================
+# =======================================================
 # S3 Bucket Config
-# ===============================
+# =======================================================
 
 # S3 Bucket Creation
 resource "aws_s3_bucket" "resume_bucket" {
@@ -65,22 +65,21 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 
 # S3 Bucket Objects Insertion
 resource "aws_s3_object" "objects" {
+  depends_on   = [aws_s3_bucket.resume_bucket]
+  for_each     = fileset("./frontend", "*.{html,css,js,ico}") # Look into the frontend directory
 
-  depends_on = [aws_s3_bucket.resume_bucket]
-  
-  for_each = fileset(".", "*.{html,css,js,ico}")
-
-  bucket = "my-s3-terraform-bucket12359"
-  key    = each.value
-  source = each.value
-  etag   = filemd5(each.value)
+  bucket       = aws_s3_bucket.resume_bucket.id
+  key          = each.value
+  source       = "${path.module}/frontend/${each.value}" # Specify the source from the frontend directory
+  etag         = filemd5("${path.module}/frontend/${each.value}")
   content_type = lookup(local.content_types, lower(regex("\\.[^.]+$", each.value)), "application/octet-stream")
 }
 
 
-# ===============================
+
+# =======================================================
 # CloudFront Config
-# ===============================
+# =======================================================
 
 resource "aws_cloudfront_distribution" "resume_s3_distribution" {
   origin {
@@ -145,9 +144,9 @@ resource "aws_cloudfront_distribution" "resume_s3_distribution" {
 }
 
 
-# ===============================
+# =======================================================
 # DynamoDB Table Config
-# ===============================
+# =======================================================
 
 resource "aws_dynamodb_table" "resume-visitor-dynamodb-table" {
   name           = "VisitorCountsTable"
@@ -175,9 +174,9 @@ resource "aws_dynamodb_table" "resume-visitor-dynamodb-table" {
 }
 
 
-# ===============================
+# =======================================================
 # Lambda Config - Requires TrustPolicy+ExecutionRole 
-# ===============================
+# =======================================================
 
 # Lambda cw-Logs
 resource "aws_cloudwatch_log_group" "visitor_count_cw_logs" {
@@ -232,8 +231,8 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 # ZIP up Lambda code (including dependencies)
 data "archive_file" "lambda_code" {
   type        = "zip"
-  source_dir  = "${path.module}/lambda_code/"
-  output_path = "${path.module}/../lambda_code.zip"
+  source_dir  = "${path.module}/backend/"
+  output_path = "${path.module}/lambda_code.zip"
 }
 
 # S3 Bucket Creation 
@@ -288,15 +287,15 @@ resource "aws_lambda_function" "visitor_count_lambda" {
   role             = aws_iam_role.lambda_iam_role.arn
   handler          = "visitor_counter.lambda_handler"
   runtime          = "python3.11"
-  filename         = "${path.module}/../lambda_code.zip"
+  filename         = "${path.module}/lambda_code.zip"
   source_code_hash = data.archive_file.lambda_code.output_base64sha256
 }
 
 
 
-# ===============================
+# =======================================================
 # API Gateway Config - HTTP API
-# ===============================
+# =======================================================
 
 
 # Provision API Gateway - HTTP
@@ -376,9 +375,9 @@ resource "aws_lambda_permission" "apigw" {
 
 
 
-# ===============================
+# =======================================================
 # Example how to gen Random ID ... use random_id resource
-# ===============================
+# =======================================================
 
 # resource "random_id" "id" {
 # 	byte_length = 8
