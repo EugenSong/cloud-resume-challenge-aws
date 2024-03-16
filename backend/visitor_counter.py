@@ -2,7 +2,7 @@ import json
 import boto3
 from decimal import Decimal
 
-# Specify the profile to use (ONLY for Local testing..same w/ lambda handler() @ bottom)
+# Specify the profile to use (ONLY for Local testing)
 # boto3.setup_default_session(profile_name="iamadmin-general")
 
 
