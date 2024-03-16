@@ -1,0 +1,21 @@
+# frontend-ci-cd.yml
+name: Frontend CI/CD
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: <version>
+      - name: Terraform Init
+        run: terraform init -chdir=terraform
+      # Add more steps for Terraform plan, apply, etc.
