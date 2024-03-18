@@ -44,14 +44,18 @@ jobs:
         with:
           terraform_version: 1.7.4
 
-      - name: Initialize Terraform
+      - name: Terraform Destroy
         if: success()
-        run: terraform init
+        run: terraform destroy -auto-approve
 
-      - name: Terraform Plan
-        if: success()
-        run: terraform plan
+      # - name: Initialize Terraform
+      #   if: success()
+      #   run: terraform init
 
-      - name: Terraform Apply
-        if: success()
-        run: terraform apply -auto-approve
+      # - name: Terraform Plan
+      #   if: success()
+      #   run: terraform plan
+
+      # - name: Terraform Apply
+      #   if: success()
+      #   run: terraform apply -auto-approve
