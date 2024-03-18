@@ -58,9 +58,9 @@ jobs:
         run: terraform plan -destroy
         continue-on-error: true
 
-      # - name: Terraform Apply
-      #   if: success()
-      #   run: terraform apply -auto-approve
+      - name: Terraform Apply
+        # if: success()
+        run: terraform apply -auto-approve
 
         #     - name: Terraform Destroy
         # if: success()
