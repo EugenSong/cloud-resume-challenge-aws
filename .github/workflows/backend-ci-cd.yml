@@ -32,8 +32,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r backend/requirements.txt
 
-      - name: Add backend directory to PYTHONPATH
-        run: echo "::add-path::backend" 
+      - name: Set up Python environment
+        run: echo "PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/backend" >> $GITHUB_ENV
 
       - name: Run Python tests
         run: pytest tests/test_visitorCounter_lambda_function.py

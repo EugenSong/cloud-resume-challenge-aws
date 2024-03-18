@@ -2,7 +2,7 @@ import json
 import boto3
 from decimal import Decimal
 
-# Specify the profile to use (ONLY for Local testing.. added set-up Node actions.. changed relative path and now added backend )
+# Specify the profile to use (ONLY for Local testing.. added set-up Node actions.. changed relative path)
 # boto3.setup_default_session(profile_name="iamadmin-general")
 
 
