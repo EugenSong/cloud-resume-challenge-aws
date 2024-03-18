@@ -3,12 +3,10 @@ import boto3
 from decimal import Decimal
 from moto import mock_aws
 import pytest
-import sys
-import os
 
 # Add the parent directory to sys.path to import lambda_function.py
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../lambda_code/")))
-from visitor_counter import lambda_handler
+from backend.visitor_counter import lambda_handler
+
 
 @pytest.fixture(scope="function")
 def dynamodb():
