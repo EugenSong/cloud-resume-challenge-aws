@@ -6,7 +6,7 @@ terraform {
     }
   }
 
-  # s3 bucket to store tf state file
+  # s3 bucket to store tf state files
   backend "s3" {
     bucket = "eugene-terraform-bucket"
     key    = "terraform.tfstate" 

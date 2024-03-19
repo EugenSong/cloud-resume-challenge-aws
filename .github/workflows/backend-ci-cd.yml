@@ -59,4 +59,7 @@ jobs:
         if: success()
         run: terraform apply -auto-approve
 
- 
+      # - name: Terraform Destroy
+      #   if: success()
+      #   id: destroy
+      #   run: terraform destroy -auto-approve
