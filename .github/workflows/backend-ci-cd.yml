@@ -1,7 +1,7 @@
 # backend-ci-cd.yml
 name: Backend CI/CD
 
-# changes pushed to ONLY files within said directories, not sub-directories
+# changes pushed to ONLY files within said directories, not sub-directories..
 on:
   push:
     paths:
