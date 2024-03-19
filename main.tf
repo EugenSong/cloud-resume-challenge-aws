@@ -5,6 +5,8 @@ terraform {
       version = "~> 5.40.0"
     }
   }
+
+  # s3 bucket to store tf state file
   backend "s3" {
     bucket = "eugene-terraform-bucket"
     key    = "terraform.tfstate" 
