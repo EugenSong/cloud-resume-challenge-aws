@@ -1,5 +1,3 @@
-variable "region" { default = "us-east-1" }
-
 terraform {
   required_providers {
     aws = {
@@ -7,7 +5,15 @@ terraform {
       version = "~> 5.40.0"
     }
   }
+  backend "s3" {
+    bucket = "eugene-terraform-bucket"
+    key    = "terraform.tfstate" 
+    region = "us-east-1"        
+  }
 }
+
+
+variable "region" { default = "us-east-1" }
 
 provider "aws" {
   region = var.region
@@ -31,18 +37,18 @@ locals {
 # S3 Bucket Creation
 resource "aws_s3_bucket" "resume_bucket" {
   bucket = "my-s3-terraform-bucket12359"
-  tags   = {
+  tags = {
     Name = "Test bucket"
   }
 }
 
 # S3 Bucket Public Access
 resource "aws_s3_bucket_public_access_block" "public_access_block" {
-  bucket = aws_s3_bucket.resume_bucket.id
-  block_public_acls         = false
-  block_public_policy       = false
-  ignore_public_acls        = false
-  restrict_public_buckets   = false
+  bucket                  = aws_s3_bucket.resume_bucket.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
 # S3 Bucket Policy
@@ -65,8 +71,8 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 
 # S3 Bucket Objects Insertion
 resource "aws_s3_object" "objects" {
-  depends_on   = [aws_s3_bucket.resume_bucket]
-  for_each     = fileset("./frontend", "*.{html,css,js,ico}") # Look into the frontend directory
+  depends_on = [aws_s3_bucket.resume_bucket]
+  for_each   = fileset("./frontend", "*.{html,css,js,ico}") # Look into the frontend directory
 
   bucket       = aws_s3_bucket.resume_bucket.id
   key          = each.value
@@ -83,9 +89,9 @@ resource "aws_s3_object" "objects" {
 
 resource "aws_cloudfront_distribution" "resume_s3_distribution" {
   origin {
-    domain_name              = aws_s3_bucket.resume_bucket.bucket_regional_domain_name
+    domain_name = aws_s3_bucket.resume_bucket.bucket_regional_domain_name
     # origin_access_control_id = aws_cloudfront_origin_access_control.default.id
-    origin_id                = local.s3_origin_id
+    origin_id = local.s3_origin_id
   }
 
   enabled             = true
@@ -135,7 +141,7 @@ resource "aws_cloudfront_distribution" "resume_s3_distribution" {
     Environment = "production"
   }
 
-# SSL/TLS Certificate (uses ACM-assigned cert)
+  # SSL/TLS Certificate (uses ACM-assigned cert)
   viewer_certificate {
     acm_certificate_arn      = "arn:aws:acm:us-east-1:415316982996:certificate/b29641cf-d004-4915-8a05-33960b691e0b"
     ssl_support_method       = "sni-only"
@@ -166,7 +172,7 @@ resource "aws_dynamodb_table" "resume-visitor-dynamodb-table" {
   #   type = "N"
   # }
 
-   tags = {
+  tags = {
     Name        = "cloud-resume-dynamodb"
     Environment = "production"
   }
@@ -188,13 +194,13 @@ resource "aws_cloudwatch_log_group" "visitor_count_cw_logs" {
 # Define Trust policy within IAM role
 # Define IAM role with inline policy attached
 resource "aws_iam_role" "lambda_iam_role" {
-  name               = "count_visitor_lambda_trust_policy"
+  name = "count_visitor_lambda_trust_policy"
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17",
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect    = "Allow",
-        Action    = "sts:AssumeRole",
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
         Principal = {
           Service = "lambda.amazonaws.com",
         },
@@ -206,7 +212,7 @@ resource "aws_iam_role" "lambda_iam_role" {
   inline_policy {
     name = "DynamoDBAccessPolicy"
     policy = jsonencode({
-      Version   = "2012-10-17",
+      Version = "2012-10-17",
       Statement = [
         {
           Effect   = "Allow",
@@ -238,18 +244,18 @@ data "archive_file" "lambda_code" {
 # S3 Bucket Creation 
 resource "aws_s3_bucket" "lambda_bucket" {
   bucket = "my-lambda-bucket12351"
-  tags   = {
+  tags = {
     Name = "Lambda bucket"
   }
 }
 
 # S3 Bucket Public Access - Public access for this Scope
 resource "aws_s3_bucket_public_access_block" "lambda_public_access_block" {
-  bucket = aws_s3_bucket.lambda_bucket.id
-  block_public_acls         = false
-  block_public_policy       = false
-  ignore_public_acls        = false
-  restrict_public_buckets   = false
+  bucket                  = aws_s3_bucket.lambda_bucket.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
 # S3 Bucket Policy
@@ -306,10 +312,10 @@ resource "aws_apigatewayv2_api" "http-lambda-apigw" {
     allow_origins = ["https://*"]
     allow_methods = ["GET"]
   }
-  target        = aws_lambda_function.visitor_count_lambda.arn
+  target = aws_lambda_function.visitor_count_lambda.arn
 
   description = "API for AWS Resume Challenge"
-    
+
 }
 
 # Create single api-gw stage
@@ -365,11 +371,11 @@ resource "aws_cloudwatch_log_group" "api_gw" {
 
 # Permission
 resource "aws_lambda_permission" "apigw" {
-    action        = "lambda:InvokeFunction"
-    function_name = aws_lambda_function.visitor_count_lambda.arn
-    principal     = "apigateway.amazonaws.com"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.visitor_count_lambda.arn
+  principal     = "apigateway.amazonaws.com"
 
-    source_arn = "${aws_apigatewayv2_api.http-lambda-apigw.execution_arn}/*/*"
+  source_arn = "${aws_apigatewayv2_api.http-lambda-apigw.execution_arn}/*/*"
 }
 
 

@@ -2,7 +2,7 @@
 const visitorCountElement = document.getElementById('visitor-count');
 
 // API Gateway HTTP API endpoint URL
-const apiUrl = 'https://tpy08tce2k.execute-api.us-east-1.amazonaws.com/default/updateVisitorCount';
+const apiUrl = 'https://higjlohm1l.execute-api.us-east-1.amazonaws.com/single_lambda_stage';
 
 // Function to *** fetch and update the visitor count ***
 function updateVisitorCount() {

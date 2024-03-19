@@ -50,25 +50,16 @@ jobs:
         if: success()
         run: terraform init
 
-      # - name: Terraform Plan
-      #   if: success()
-      #   run: terraform plan
+      - name: Terraform Plan
+        if: success()
+        run: terraform plan
 
-      - name: Show Destroy plan
-        run: terraform plan -destroy
-        continue-on-error: true
 
       - name: Terraform Apply
-        # if: success()
+        if: success()
         run: terraform apply -auto-approve
 
-        #     - name: Terraform Destroy
-        # if: success()
-        # run: terraform destroy -auto-approve
-
-
-
-
-      - name: Terraform destroy
-        id: destroy
-        run: terraform destroy -auto-approve
+      # - name: Terraform Destroy
+      #   if: success()
+      #   id: destroy
+      #   run: terraform destroy -auto-approve

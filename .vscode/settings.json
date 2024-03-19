@@ -1,5 +1,5 @@
 {
     "python.analysis.extraPaths": [
-        "./lambda_code"
+        "./backend"
     ]
 }
