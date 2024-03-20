@@ -49,7 +49,7 @@ jobs:
 
       - name: Initialize Terraform
         if: success()
-        run: echo "no" | terraform init -reconfigure
+        run: terraform init
 
       - name: Terraform Plan
         if: success()
