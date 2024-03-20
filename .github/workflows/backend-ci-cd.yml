@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: 3.11
 
-       # Add setup-node action to use Node.js version 20.x
+        # Add setup-node action to use Node.js version 20.x
       - name: Use Node.js 20.x
         uses: actions/setup-node@v3
         with:
@@ -44,16 +44,13 @@ jobs:
         with:
           terraform_version: 1.7.4
 
-
-
       - name: Initialize Terraform
         if: success()
-        run: terraform init
+        run: terraform init -reconfigure
 
       - name: Terraform Plan
         if: success()
         run: terraform plan
-
 
       - name: Terraform Apply
         if: success()
