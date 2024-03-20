@@ -43,13 +43,13 @@ jobs:
 
       - name: Install Terraform
         if: success()
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.7.4
 
       - name: Initialize Terraform
         if: success()
-        run: echo "no" | terraform init -reconfigure
+        run: terraform init -reconfigure
 
       - name: Terraform Plan
         if: success()
