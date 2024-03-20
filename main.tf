@@ -9,7 +9,7 @@ terraform {
   # s3 bucket to store tf state files
   backend "s3" {
     bucket = "eugene-terraform-bucket"
-    key    = "terraform.tfstate" 
+    key    = "terraform.tfstate"
     region = "us-east-1"
   }
 }
