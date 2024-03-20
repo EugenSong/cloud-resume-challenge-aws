@@ -46,7 +46,7 @@ jobs:
 
       - name: Initialize Terraform
         if: success()
-        run: terraform init -reconfigure -input=false
+        run: terraform init
 
       - name: Terraform Plan
         if: success()
