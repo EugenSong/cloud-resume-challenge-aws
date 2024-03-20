@@ -49,7 +49,7 @@ jobs:
 
       - name: Initialize Terraform
         if: success()
-        run: terraform init -force-copy
+        run: terraform init
 
       - name: Terraform Plan
         if: success()
