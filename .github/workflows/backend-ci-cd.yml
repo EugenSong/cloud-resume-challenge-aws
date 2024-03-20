@@ -30,12 +30,15 @@ jobs:
           node-version: 20.x
 
       - name: Install dependencies
+        if: success()
         run: pip install -r backend/requirements.txt
 
       - name: Set up Python environment
+        if: success()
         run: echo "PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/backend" >> $GITHUB_ENV
 
       - name: Run Python tests
+        if: success()
         run: pytest tests/test_visitorCounter_lambda_function.py
 
       - name: Install Terraform
