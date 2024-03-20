@@ -6,11 +6,14 @@ terraform {
     }
   }
 
+  
   # s3 bucket to store tf state files
   backend "s3" {
     bucket = "eugene-terraform-bucket"
     key    = "terraform.tfstate" 
-    region = "us-east-1"        
+    region = "us-east-1"
+    force_path_style   = true  # Force the backend to use the specified key without checking for existing state
+        
   }
 }
 
