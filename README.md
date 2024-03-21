@@ -43,10 +43,8 @@ The Cloud Resume Challenge tasks participants with creating a resume website on 
 By leveraging these AWS services, GitHub Actions, and Terraform, I successfully completed the Cloud Resume Challenge, showcasing proficiency in cloud computing and web development.
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-### Built With
+## Built With
 * **S3**
 * **CloudFront**
 * **DynamoDB**
@@ -54,6 +52,7 @@ By leveraging these AWS services, GitHub Actions, and Terraform, I successfully 
 * **CloudWatch**
 * **Route53**
 * **Python**
+* **Javascript/HTML/CSS** (assets)
 
 ### DevOps
 * **Github Actions**
