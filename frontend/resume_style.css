@@ -164,8 +164,8 @@ section {
 /* Visitor count styling - more visible and better positioned */
 .visitor-count-label {
   position: absolute;
-  top: -45px;
-  right: 0;
+  top: 10px;
+  right: 10px;
   font-family: Arial, sans-serif;
   font-size: 12pt;
   color: #666666;
