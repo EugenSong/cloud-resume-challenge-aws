@@ -9,7 +9,7 @@
 body {
   font-family: Arial, sans-serif;
   font-size: 11pt;
-  line-height: 1.0;
+  line-height: 1.2;
   margin: 0;
   padding: 0;
   background: #f5f5f5;
@@ -22,23 +22,23 @@ body {
 main {
   background: #ffffff;
   width: 100%;
-  max-width: 468pt; /* Match Google Docs page width */
+  max-width: 800px; /* Restore reasonable width */
   margin: 20px;
-  padding: 72pt 72pt 72pt 72pt; /* Match Google Docs padding */
+  padding: 40px; /* Reasonable padding */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Name styling - large and centered */
 header h1 {
   font-family: Arial, sans-serif;
-  font-size: 20pt;
-  font-weight: 400;
+  font-size: 24pt;
+  font-weight: 700;
   color: #000000;
   text-align: center;
-  margin-bottom: 0;
+  margin-bottom: 5px;
   padding-top: 0;
   padding-bottom: 0;
-  line-height: 1.0;
+  line-height: 1.2;
 }
 
 /* Contact info styling - centered, smaller text */
@@ -49,10 +49,10 @@ header p {
   color: #666666;
   text-align: center;
   margin-top: 0;
-  margin-bottom: 12pt;
+  margin-bottom: 20px;
   padding-top: 0;
   padding-bottom: 0;
-  line-height: 1.0;
+  line-height: 1.2;
 }
 
 /* Contact links styling */
@@ -66,15 +66,15 @@ header p a {
 /* Section headers with underline */
 section h2 {
   font-family: Arial, sans-serif;
-  font-size: 11pt;
+  font-size: 14pt;
   font-weight: 700;
   color: #000000;
-  border-bottom: 0.8pt solid #000000;
-  padding-top: 0;
-  padding-bottom: 1pt;
+  border-bottom: 1px solid #000000;
+  padding-top: 15px;
+  padding-bottom: 2px;
   margin-top: 0;
-  margin-bottom: 0;
-  line-height: 1.0;
+  margin-bottom: 10px;
+  line-height: 1.2;
   text-align: left;
 }
 
@@ -85,25 +85,25 @@ section p {
   font-weight: 400;
   color: #000000;
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 8px;
   padding-top: 0;
   padding-bottom: 0;
-  line-height: 1.0;
+  line-height: 1.4;
   text-align: left;
 }
 
 /* Paragraphs that come after section headers */
 section p.below-line {
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 8px;
   padding-top: 0;
   padding-bottom: 0;
 }
 
 /* Paragraphs that should be closer to text above */
 section p.bring-closer-to-text-above {
-  margin-top: 0;
-  margin-bottom: 0;
+  margin-top: -8px;
+  margin-bottom: 8px;
 }
 
 /* Bold text styling */
@@ -118,10 +118,10 @@ i, em {
 
 /* List styling */
 ul {
-  margin-left: 18pt;
+  margin-left: 20px;
   padding-left: 0;
-  margin-top: 0;
-  margin-bottom: 0;
+  margin-top: 5px;
+  margin-bottom: 10px;
   list-style-type: disc;
 }
 
@@ -131,11 +131,11 @@ li {
   font-size: 11pt;
   font-weight: 400;
   color: #000000;
-  margin-left: -4.5pt;
+  margin-left: 0;
   padding-left: 0;
   margin-top: 0;
-  margin-bottom: 0;
-  line-height: 1.0;
+  margin-bottom: 4px;
+  line-height: 1.4;
   text-align: left;
 }
 
@@ -157,7 +157,7 @@ li.below-line {
 
 /* Section spacing */
 section {
-  margin-bottom: 12pt;
+  margin-bottom: 20px;
 }
 
 /* Visitor count styling - keep existing functionality */
@@ -195,11 +195,11 @@ a:hover {
 @media (max-width: 600px) {
   main {
     margin: 10px;
-    padding: 36pt 36pt 36pt 36pt;
+    padding: 20px;
   }
   
   header h1 {
-    font-size: 18pt;
+    font-size: 20pt;
   }
   
   .visitor-count-label {
