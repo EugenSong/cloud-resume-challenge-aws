@@ -1,67 +1,212 @@
-/* Name */
-header h1 {
-  text-align: center;
-}
-
-/* Personal Info */
-header p {
-  text-align: center;
-}
-
-/* Section underline */
-section h2 {
-  border-bottom: 1px solid #000; /* Adjust the color (#000 for black) and thickness (2px) as needed */
-  padding-bottom: 0px; /* Adds space between the text and the underline... placeholder */
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* Create the 'page' Container Effect */
 body {
   font-family: Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.0;
   margin: 0;
   padding: 0;
   background: #f5f5f5;
   display: flex;
   justify-content: center;
+  color: #000000;
 }
 
 /* Give the background screen a different color to facilitate 'page' */
 main {
-  background: #fff;
+  background: #ffffff;
   width: 100%;
-  max-width: 800px; /* Adjust based on your preference */
+  max-width: 468pt; /* Match Google Docs page width */
   margin: 20px;
-  padding: 20px;
+  padding: 72pt 72pt 72pt 72pt; /* Match Google Docs padding */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Name styling - large and centered */
+header h1 {
+  font-family: Arial, sans-serif;
+  font-size: 20pt;
+  font-weight: 400;
+  color: #000000;
+  text-align: center;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1.0;
+}
+
+/* Contact info styling - centered, smaller text */
+header p {
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  font-weight: 400;
+  color: #666666;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 12pt;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1.0;
+}
+
+/* Contact links styling */
+header p a {
+  color: #1155cc;
+  text-decoration: underline;
+  -webkit-text-decoration-skip: none;
+  text-decoration-skip-ink: none;
+}
+
+/* Section headers with underline */
+section h2 {
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  font-weight: 700;
+  color: #000000;
+  border-bottom: 0.8pt solid #000000;
+  padding-top: 0;
+  padding-bottom: 1pt;
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1.0;
+  text-align: left;
+}
+
+/* Regular paragraphs */
+section p {
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  font-weight: 400;
+  color: #000000;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1.0;
+  text-align: left;
+}
+
+/* Paragraphs that come after section headers */
+section p.below-line {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Paragraphs that should be closer to text above */
+section p.bring-closer-to-text-above {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Bold text styling */
+b, strong {
+  font-weight: 700;
+}
+
+/* Italic text styling */
+i, em {
+  font-style: italic;
+}
+
+/* List styling */
+ul {
+  margin-left: 18pt;
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style-type: disc;
+}
+
+/* List items */
+li {
+  font-family: Arial, sans-serif;
+  font-size: 11pt;
+  font-weight: 400;
+  color: #000000;
+  margin-left: -4.5pt;
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 1.0;
+  text-align: left;
+}
+
+/* List items that should be closer to text above */
+li.bring-closer-to-text-above {
+  margin-top: 0;
+}
+
+li.below-line {
+  margin-top: 0;
 }
 
 /* Date/Links Rightward Alignment */
 .align-right {
   float: right;
+  font-style: italic;
+  color: #000000;
 }
 
-/* Decrease margin for all Bullet points */
-ul {
-  padding-left: 20px; /* Reduces the default padding */
-  margin-left: 0; /* Removes any additional margin */
+/* Section spacing */
+section {
+  margin-bottom: 12pt;
 }
 
-/* Decrease gap with text above (more general use) */
-.bring-closer-to-text-above {
-  margin-top: -15px; /* Reduce the number as needed to bring it closer to the text above */
-}
-
-/* Decrease gap for text below lines */
-.below-line {
-  margin-top: -15px; /* Reduce the number as needed to bring it closer to the text above */
-}
-
-/* Name, Section text color */
-h1,
-h2 {
-  color: #751a47;
-}
-
-/* Visitor count */
+/* Visitor count styling - keep existing functionality */
 .visitor-count-label {
-  margin-top: 60px;
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 9pt;
+  color: #666666;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 5px 10px;
+  border-radius: 3px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.visitor-count {
+  font-weight: 700;
+  color: #000000;
+}
+
+/* Links in content */
+a {
+  color: #1155cc;
+  text-decoration: underline;
+  -webkit-text-decoration-skip: none;
+  text-decoration-skip-ink: none;
+}
+
+a:hover {
+  color: #0d47a1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  main {
+    margin: 10px;
+    padding: 36pt 36pt 36pt 36pt;
+  }
+  
+  header h1 {
+    font-size: 18pt;
+  }
+  
+  .visitor-count-label {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-bottom: 20px;
+    text-align: center;
+  }
 }
