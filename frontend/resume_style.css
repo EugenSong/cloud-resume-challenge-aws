@@ -26,6 +26,7 @@ main {
   margin: 20px;
   padding: 40px; /* Reasonable padding */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative; /* Enable absolute positioning for visitor counter */
 }
 
 /* Name styling - large and centered */
@@ -160,23 +161,26 @@ section {
   margin-bottom: 20px;
 }
 
-/* Visitor count styling - keep existing functionality */
+/* Visitor count styling - more visible and better positioned */
 .visitor-count-label {
-  position: fixed;
-  top: 10px;
-  right: 10px;
+  position: absolute;
+  top: -45px;
+  right: 0;
   font-family: Arial, sans-serif;
-  font-size: 9pt;
+  font-size: 12pt;
   color: #666666;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 5px 10px;
-  border-radius: 3px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
 }
 
 .visitor-count {
   font-weight: 700;
-  color: #000000;
+  color: #2563eb;
+  font-size: 13pt;
 }
 
 /* Links in content */
@@ -196,6 +200,7 @@ a:hover {
   main {
     margin: 10px;
     padding: 20px;
+    padding-top: 60px; /* Add space for visitor counter on mobile */
   }
   
   header h1 {
@@ -203,10 +208,15 @@ a:hover {
   }
   
   .visitor-count-label {
-    position: relative;
-    top: auto;
-    right: auto;
-    margin-bottom: 20px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    left: 10px;
     text-align: center;
+    font-size: 11pt;
+  }
+  
+  .visitor-count {
+    font-size: 12pt;
   }
 }
